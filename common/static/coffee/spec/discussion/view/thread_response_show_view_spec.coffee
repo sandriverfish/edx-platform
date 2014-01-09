@@ -7,6 +7,9 @@ describe "ThreadResponseShowView", ->
                     <span class="plus-icon"/><span class="votes-count-number">0</span> <span class="sr">votes (click to vote)</span>
                 </a>
             </div>
+            <script type="text/template" id="thread-response-show-template">
+                <div class="response-body"><%- body %></div>
+            </script>
             """
         )
 
@@ -23,6 +26,7 @@ describe "ThreadResponseShowView", ->
         @view = new ThreadResponseShowView({ model: @comment })
         @view.setElement($(".discussion-post"))
         window.user = new DiscussionUser({id: "567", upvoted_ids: []})
+        DiscussionUtil.loadRoles({Administrator: [], Moderator: [], "Community TA": []})
 
     it "renders the vote correctly", ->
         DiscussionViewSpecHelper.checkRenderVote(@view, @comment)
@@ -38,3 +42,9 @@ describe "ThreadResponseShowView", ->
 
     it "vote button activates on appropriate events", ->
         DiscussionViewSpecHelper.checkVoteButtonEvents(@view)
+
+    describe "content rendering", ->
+        includeUnicodeSpecs (spec, content) ->
+            spec.comment.set({body: content})
+            spec.view.render()
+            expect(spec.view.$el.find(".response-body").text()).toEqual(content)

@@ -7,6 +7,9 @@ describe "DiscussionThreadShowView", ->
                     <span class="plus-icon"/><span class="votes-count-number">0</span> <span class="sr">votes (click to vote)</span>
                 </a>
             </div>
+            <script type="text/template" id="thread-show-template">
+                <div class="post-body"><%- body %></div>
+            </script>
             """
         )
 
@@ -38,3 +41,9 @@ describe "DiscussionThreadShowView", ->
 
     it "vote button activates on appropriate events", ->
         DiscussionViewSpecHelper.checkVoteButtonEvents(@view)
+
+    describe "content rendering", ->
+        includeUnicodeSpecs (spec, content) ->
+            spec.thread.set({body: content})
+            spec.view.render()
+            expect(spec.view.$el.find(".post-body").text()).toEqual(content)

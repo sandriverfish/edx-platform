@@ -60,3 +60,8 @@ describe 'ResponseCommentShowView', ->
             @response.set("abuse_flaggers",temp_array)
             @response.unflagAbuse()
             expect(@response.get 'abuse_flaggers').toEqual []
+
+        includeUnicodeSpecs (spec, content) ->
+            spec.response.set({body: content})
+            spec.view.render()
+            expect(spec.view.$el.find('.response-body').text()).toEqual(content)

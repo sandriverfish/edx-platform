@@ -48,6 +48,7 @@ lib_paths:
     - js/test/add_ajax_prefix.js
     - js/test/i18n.js
     - coffee/src/jquery.immediateDescendents.js
+    - js/vendor/mathjax-MathJax-c9db6ac/
 
 # Paths to source JavaScript files
 src_paths:
@@ -67,8 +68,8 @@ spec_paths:
 # are loaded using a <script> tag in the test runner page.
 # When loading many files, this can be slow, so
 # exclude any files you don't need.
-#exclude_from_page:
-#    - path/to/lib/include/exception_*.js
+exclude_from_page:
+    - js/vendor/mathjax-MathJax-c9db6ac/
 
 # Regular expression used to guarantee that a *.js file
 # is included in the test runner page.
