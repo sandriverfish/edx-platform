@@ -1,6 +1,8 @@
 #pylint: disable=C0111
 
 import os
+from datetime import datetime
+from pytz import UTC
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -168,6 +170,7 @@ def create_course(course, metadata):
                 },
             ]
         },
+        start=datetime(2012, 2, 3, tzinfo=UTC),
     )
 
     # Add a section to the course to contain problems
@@ -258,7 +261,7 @@ def click_grade(_step):
         assert iframe.is_text_present('LTI consumer (edX) responded with XML content')
 
 @step('I see in iframe that LTI role is (.*)$')
-def click_grade(_step, role):
+def check_role(_step, role):
     location = world.scenario_dict['LTI'].location.html_id()
     iframe_name = 'ltiFrame-' + location
     with world.browser.get_iframe(iframe_name) as iframe:
@@ -269,8 +272,6 @@ def switch_view(_step, view):
     staff_status = world.browser.find_by_id('staffstatus').first
     if not staff_status.text == view:
         staff_status.click()
-        switched_staff_status = world.retry_on_exception(lambda: world.browser.find_by_id('staffstatus'))
-        assert_equals(switched_staff_status.text, view)
 
 
 
