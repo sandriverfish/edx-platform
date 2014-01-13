@@ -23,6 +23,7 @@ import pytz
 import requests
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import User
@@ -36,6 +37,44 @@ from verify_student.ssencrypt import (
 )
 
 log = logging.getLogger(__name__)
+
+# eww
+def generateUUID():
+        return str(uuid.uuid4)
+
+class MidcourseReverificationWindow(models.Model):
+    """
+    Defines the start and end times for midcourse reverification for a particular course.
+    """
+    # the course that this window is attached to
+    course_id = models.CharField(max_length=255, db_index=True)
+
+    start_date = models.DateTimeField(default=None, null=True, blank=True)
+
+    end_date = models.DateTimeField(default=None, null=True, blank=True)
+
+    @classmethod
+    def window_open_for_course(cls, course_id):
+        """
+        Returns a boolean, True if the course is currently asking for reverification, else False.
+        """
+        now = datetime.now(pytz.UTC)
+
+        # We are assuming one window per course_id.  TODO find out if this assumption is OK
+        try:
+            window = cls.objects.get(course_id=course_id)
+        except(ObjectDoesNotExist):
+            return False
+
+        if (window.start_date <= now <= window.end_date):
+            return True
+        else:
+            return False
+
+    @classmethod
+    def get_window(cls, course_id):
+        """ TODO documentation """
+        return cls.objects.get(course_id=course_id)
 
 
 class VerificationException(Exception):
@@ -135,7 +174,8 @@ class PhotoVerification(StatusModel):
     # user IDs or something too easily guessable.
     receipt_id = models.CharField(
         db_index=True,
-        default=uuid.uuid4,
+        # using awk uuid workaround for now, see http://stackoverflow.com/questions/15041265/south-migrate-error-name-uuid-is-not-defined
+        default=generateUUID,
         max_length=255,
     )
 
@@ -166,6 +206,8 @@ class PhotoVerification(StatusModel):
     # goes on. We don't try to define an exhuastive list -- this is just
     # capturing it so that we can later query for the common problems.
     error_code = models.CharField(blank=True, max_length=50)
+
+    
 
     class Meta:
         abstract = True
