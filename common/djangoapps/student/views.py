@@ -369,7 +369,6 @@ def dashboard(request):
         external_auth_map = ExternalAuthMap.objects.get(user=user)
     except ExternalAuthMap.DoesNotExist:
         pass
-    from nose.tools import set_trace; set_trace()
 
     context = {'course_enrollment_pairs': course_enrollment_pairs,
                'course_optouts': course_optouts,
