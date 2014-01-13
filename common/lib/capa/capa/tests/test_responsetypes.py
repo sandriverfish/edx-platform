@@ -867,36 +867,25 @@ class NumericalResponseTest(ResponseTest):
         self.assert_multiple_grade(problem, correct_responses, incorrect_responses)
 
     def test_floats(self):
+        """
+        Default tolerance for all responsetypes is 1e-3%.
+        """
         problem_setup = [
+          #[given_asnwer, [list of correct responses], [list of incorrect responses]]
             [1, ["1"], ["1.1"],],
+            [2.0, ["2.0"], ["1.0"],],
             [4, ["4.0", "4.00004"],  ["4.00005"]],
             [0.00016, ["1.6*10^-4"], [""]],
-            [0.000016, ["1.6*10^-5"], [""]],
-            [1.9e24, ["1.9*10^24"], [""]],
+            [0.000016, ["1.6*10^-5"], ["0.000165"]],
+            [1.9e24, ["1.9*10^24"], ["1.9001*10^24"]],
             [2e-15, ["2*10^-15"], [""]],
             [3141592653589793238., ["3141592653589793115."], [""]],
-            # [0.1234567890123457,  ["0.1234567890123457"], ["0.1234567890123451"]],
-            #ipdb> format(v2.real, "1.15f")
-            #'0.123456789012000'
-            # this tests breaks precisions...
-            # self.neq(0.1234567890123457,   0.1234567890123456)
-            # investigate and fix..
+            [0.1234567,  ["0.123456", "0.1234561"], ["0.123451"]],
+            [1e-5,  ["1e-5", "1.0e-5"], ["-1e-5", "2*1e-5"]],
         ]
         for given_answer, correct_responses, incorrect_responses in problem_setup:
             problem = self.build_problem(answer=given_answer)
-            # import ipdb; ipdb.set_trace()
             self.assert_multiple_grade(problem, correct_responses, incorrect_responses)
-
-        # self.neq(0.1234567890123457,   0.1234567890123456)
-        # self.eq(  0.1234567890123457,   0.1234567890123457)
-        # self.eq(  0.12345678901234577, 0.12345678901234579)
-
-        # self.neq(1.0, 2.0)
-        # self.neq(float_info.epsilon, -float_info.epsilon)
-        # self.neq(float_info.epsilon, 2 * float_info.epsilon)
-
-        # self.neq(0.00001600000000000001,   1.6*10**-5)
-        # self.eq(  0.000016000000000000001, 1.6*10**-5)
 
     def test_grade_with_script(self):
         script_text = "computed_response = math.sqrt(4)"
