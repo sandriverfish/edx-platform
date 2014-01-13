@@ -43,10 +43,8 @@ def compare_with_tolerance(v1, v2, tol=default_tolerance):
         # `inf <= inf` which is a fail. Instead, compare directly.
         return v1 == v2
     else:
-        # import ipdb; ipdb.set_trace()
         # v1 and v2 are, in general, complex numbers:
-        # there are some notes about backward compatibility issue:
-        # see responsetypes.get_staff_ans()).
+        # there are some notes about backward compatibility issue: see responsetypes.get_staff_ans()).
         return abs(v1 - v2) <= tolerance
 
 def contextualize_text(text, context):  # private
