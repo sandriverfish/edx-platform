@@ -46,4 +46,10 @@ urlpatterns = patterns(
         views.reverification_submission_confirmation,
         name="verify_student_reverification_confirmation"
     ),
+
+    url(
+        r'^midcourse_reverification_confirmation$',
+        views.midcourse_reverification_confirmation,
+        name="verify_student_midcourse_reverification_confirmation"
+    )
 )

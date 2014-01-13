@@ -322,6 +322,57 @@ class ReverifyView(View):
             }
             return render_to_response("verify_student/photo_reverification.html", context)
 
+class MidCourseReverifyView(View):
+    """
+    The mid-course reverification view.
+    Needs to perform these functions:
+        - take new face photo
+        - retrieve the old id photo
+        - submit these photos to photo verification service
+
+    Does not need to be attached to a particular course (TODO er make sure that's true)
+    Does not need to worry about pricing
+    """
+    @method_decorator(login_required)
+    def get(self, request):
+        """
+        display this view
+        """
+        context = {
+            "user_full_name": request.user.profile.name,
+            "error": False,
+        }
+        return render_to_response("verify_student/midcourse_photo_reverification.html", context)
+
+    @method_decorator(login_required)
+    def post(self, request):
+        """
+        submits the reverification to SoftwareSecure
+        """
+
+        try:
+            # TODO make sure we don't need something more specialized, i.e. a subclass on SSPV
+            attempt = SoftwareSecurePhotoVerification(user=request.user)
+            b64_face_image = request.POST['face_image'].split(",")[1]
+            b64_photo_id_image = "lolboats" #TODO find old photo id image
+
+            attempt.upload_face_image(b64_face_image.decode('base64'))
+            attempt.upload_photo_id_image(b64_photo_id_image.decode('base64'))
+            attempt.mark_ready()
+
+            attempt.save()
+            attempt.submit()
+            return HttpResponseRedirect(reverse('verify_student_midcourse_reverification_confirmation'))
+        except Exception:
+            log.exception(
+                "Could not submit verification attempt for user {}".format(request.user.id)
+            )
+            context = {
+                "user_full_name": request.user.profile.name,
+                "error": True,
+            }
+            return render_to_response("verify_student/midcourse_photo_reverification.html", context)
+
 
 @login_required
 def reverification_submission_confirmation(_request):
@@ -330,3 +381,11 @@ def reverification_submission_confirmation(_request):
     """
 
     return render_to_response("verify_student/reverification_confirmation.html")
+
+@login_required
+def midcourse_reverification_confirmation(_request):
+    """
+    Shows the user a confirmation page if the submission to SoftwareSecure was successful
+    """
+
+    return render_to_response("verify_student/midcourse_reverification_confirmation.html")
