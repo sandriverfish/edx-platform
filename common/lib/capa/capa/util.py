@@ -47,6 +47,7 @@ def compare_with_tolerance(v1, v2, tol=default_tolerance):
         # there are some notes about backward compatibility issue: see responsetypes.get_staff_ans()).
         return abs(v1 - v2) <= tolerance
 
+
 def contextualize_text(text, context):  # private
     ''' Takes a string with variables. E.g. $a+$b.
     Does a substitution of those variables from the context '''
