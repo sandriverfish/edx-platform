@@ -13,11 +13,11 @@ def compare_with_tolerance(v1, v2, tol=default_tolerance):
 
     tol is relative if it ends in %; otherwise, it is absolute
 
-     - v1    :  student result (number)
-     - v2    :  instructor result (number)
+     - v1    :  student result (float complex number)
+     - v2    :  instructor result (float complex number)
      - tol   :  tolerance (string representing a number)
 
-     Default tolerance of 1e-3% is added to compares two floats for near-equality
+     Default tolerance of 1e-3% is added to compare two floats for near-equality
      (to handle machine representation errors).
      It is relative, as the acceptable difference between two floats depends on the magnitude of the floats.
      (http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/)
