@@ -56,13 +56,11 @@ class ResponseTest(unittest.TestCase):
     def assert_multiple_grade(self, problem, correct_answers, incorrect_answers):
         for input_str in correct_answers:
             result = problem.grade_answers({'1_2_1': input_str}).get_correctness('1_2_1')
-            self.assertEqual(result, 'correct',
-                             msg="%s should be marked incorrect" % str(input_str))
+            self.assertEqual(result, 'correct')
 
         for input_str in incorrect_answers:
             result = problem.grade_answers({'1_2_1': input_str}).get_correctness('1_2_1')
-            self.assertEqual(result, 'incorrect',
-                             msg="%s should be marked correct" % str(input_str))
+            self.assertEqual(result, 'incorrect')
 
     def _get_random_number_code(self):
         """Returns code to be used to generate a random result."""
