@@ -329,8 +329,7 @@ class LTIModule(LTIFields, XModule):
         return u':'.join(urllib.quote(i) for i in (self.lti_id, self.get_resource_link_id(), self.get_user_id()))
 
     def get_course(self):
-        course_id = self.course_id
-        course_location = CourseDescriptor.id_to_location(course_id)
+        course_location = CourseDescriptor.id_to_location(self.course_id)
         course = self.descriptor.runtime.modulestore.get_item(course_location)
         return course
 
