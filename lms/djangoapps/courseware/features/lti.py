@@ -1,5 +1,4 @@
 #pylint: disable=C0111
-
 import os
 from datetime import datetime
 from pytz import UTC
@@ -11,21 +10,16 @@ from lettuce.django import django_url
 from nose.tools import assert_equals
 from common import course_id, visit_scenario_item
 
-
 from courseware.tests.factories import InstructorFactory
-
 
 @step('I view the LTI and error is shown$')
 def lti_is_not_rendered(_step):
     # error is shown
     assert world.is_css_present('.error_message', wait_time=0)
-
     # iframe is not presented
     assert not world.is_css_present('iframe', wait_time=0)
-
     # link is not presented
     assert not world.is_css_present('.link_lti_new_window', wait_time=0)
-
 
 def check_lti_iframe_content(text):
     #inside iframe test content is presented
@@ -39,14 +33,12 @@ def check_lti_iframe_content(text):
             max_attempts=5
         ))
 
-
 @step('I view the LTI and it is rendered in (.*)$')
 def lti_is_rendered(_step, rendered_in):
     if rendered_in.strip() == 'iframe':
         assert world.is_css_present('iframe', wait_time=2)
         assert not world.is_css_present('.link_lti_new_window', wait_time=0)
         assert not world.is_css_present('.error_message', wait_time=0)
-
         # iframe is visible
         assert world.css_visible('iframe')
         check_lti_iframe_content("This is LTI tool. Success.")
@@ -59,7 +51,6 @@ def lti_is_rendered(_step, rendered_in):
     else:  # incorrent rendered_in parameter
         assert False
 
-
 @step('I view the LTI but incorrect_signature warning is rendered$')
 def incorrect_lti_is_rendered(_step):
     assert world.is_css_present('iframe', wait_time=2)
@@ -67,7 +58,6 @@ def incorrect_lti_is_rendered(_step):
     assert not world.is_css_present('.error_message', wait_time=0)
     #inside iframe test content is presented
     check_lti_iframe_content("Wrong LTI signature")
-
 
 @step('the course has correct LTI credentials$')
 def set_correct_lti_passport(_step):
@@ -79,7 +69,6 @@ def set_correct_lti_passport(_step):
         )]
     }
     i_am_registered_for_the_course(coursenum, metadata)
-
 
 @step('the course has incorrect LTI credentials$')
 def set_incorrect_lti_passport(_step):
@@ -121,14 +110,11 @@ def add_correct_lti_to_course(_step, fields):
         display_name='LTI',
         metadata=metadata,
     )
-
     setattr(world.scenario_dict['LTI'], 'TEST_BASE_PATH', '{host}:{port}'.format(
         host=world.browser.host,
         port=world.browser.port,
     ))
-
     visit_scenario_item('LTI')
-
 
 def create_course(course, metadata):
 
@@ -136,7 +122,6 @@ def create_course(course, metadata):
     # the same course twice
     # This also ensures that the necessary templates are loaded
     world.clear_courses()
-
     weight = 0.1
     grading_policy = {
         "GRADER": [
@@ -150,7 +135,6 @@ def create_course(course, metadata):
         ]
     }
     metadata.update(grading_policy)
-
     # Create the course
     # We always use the same org and display name,
     # but vary the course identifier (e.g. 600x or 191x)
@@ -172,7 +156,6 @@ def create_course(course, metadata):
         },
         start=datetime(2012, 2, 3, tzinfo=UTC),
     )
-
     # Add a section to the course to contain problems
     world.scenario_dict['CHAPTER'] = world.ItemFactory.create(
         parent_location=world.scenario_dict['COURSE'].location,
@@ -185,46 +168,35 @@ def create_course(course, metadata):
         display_name='Test Section',
         metadata={'graded': True, 'format': 'Homework'})
 
-
 def i_am_registered_for_the_course(course, metadata):
     # Create the course
     create_course(course, metadata)
-
     # Create an instructor
     instructor = InstructorFactory(course=world.scenario_dict['COURSE'].location)
-
     # Enroll the user in the course and log them in
     world.enroll_user(instructor, course_id(course))
     world.log_in(username=instructor.username, password='test')
 
-
 def check_lti_popup():
     parent_window = world.browser.current_window # Save the parent window
     world.css_find('.link_lti_new_window').first.click()
-
     assert len(world.browser.windows) != 1
-
     for window in world.browser.windows:
         world.browser.switch_to_window(window) # Switch to a different window (the pop-up)
         # Check if this is the one we want by comparing the url
         url = world.browser.url
         basename = os.path.basename(url)
         pathname = os.path.splitext(basename)[0]
-
         if pathname == u'correct_lti_endpoint':
             break
-
     result = world.css_find('.result').first.text
     assert result == u'This is LTI tool. Success.'
-
     world.browser.driver.close() # Close the pop-up window
     world.browser.switch_to_window(parent_window) # Switch to the main window again
-
 
 @step('I see text "([^"]*)"$')
 def check_progress(_step, text):
     assert world.browser.is_text_present(text)
-
 
 @step('I see graph with total progress "([^"]*)"$')
 def see_graph(_step, progress):
@@ -234,23 +206,18 @@ def see_graph(_step, progress):
         progress=progress,
     )
     node = world.browser.find_by_xpath(XPATH)
-
     assert node
-
 
 @step('I see in the gradebook table that "([^"]*)" is "([^"]*)"$')
 def see_value_in_the_gradebook(_step, label, text):
     TABLE_SELECTOR = '.grade-table'
     index = 0
     table_headers = world.css_find('{0} thead th'.format(TABLE_SELECTOR))
-
     for i, element in enumerate(table_headers):
         if element.text.strip() == label:
             index = i
             break;
-
     assert world.css_has_text('{0} tbody td'.format(TABLE_SELECTOR), text, index=index)
-
 
 @step('I submit answer to LTI question$')
 def click_grade(_step):
@@ -272,9 +239,3 @@ def switch_view(_step, view):
     staff_status = world.browser.find_by_id('staffstatus').first
     if not staff_status.text == view:
         staff_status.click()
-
-
-
-
-
-
