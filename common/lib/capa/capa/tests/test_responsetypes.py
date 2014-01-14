@@ -11,7 +11,6 @@ import unittest
 import textwrap
 import requests
 import mock
-from sys import float_info
 
 from . import new_loncapa_problem, test_system
 import calc
