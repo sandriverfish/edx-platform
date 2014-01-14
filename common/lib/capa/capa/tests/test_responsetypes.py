@@ -891,7 +891,7 @@ class NumericalResponseTest(ResponseTest):
         script_text = "computed_response = math.sqrt(4)"
         problem = self.build_problem(answer="$computed_response", script=script_text)
         correct_responses = ["2", "2.0"]
-        incorrect_responses =   ["", "2.01", "1.99", "0"]
+        incorrect_responses = ["", "2.01", "1.99", "0"]
         self.assert_multiple_grade(problem, correct_responses, incorrect_responses)
 
     def test_raises_zero_division_err(self):
