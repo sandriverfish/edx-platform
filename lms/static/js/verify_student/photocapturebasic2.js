@@ -141,7 +141,9 @@ function initSnapshotHandler(names, hasHtml5CameraSupport) {
       if (localMediaStream) {
         ctx.drawImage(video[0], 0, 0);
         // TODO put this back eventually
-        //image[0].src = canvas[0].toDataURL('image/png');
+        image[0] = image[0];
+        image[0].src = image[0].src;
+        image[0].src = canvas[0].toDataURL('image/png');
       }
       else {
         return false;
