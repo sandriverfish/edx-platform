@@ -185,7 +185,7 @@ class MockLTIRequestHandler(BaseHTTPRequestHandler):
         '''
         self._send_head(status_code)
         if getattr(self.server, 'grade_data', False):  # lti can be graded
-            url = "//{}:{}".format(self.server.server_host, self.server.server_port)
+            url = "//%s:%s" % self.server.server_address
             response_str = textwrap.dedent("""
                 <html>
                     <head>
@@ -203,7 +203,7 @@ class MockLTIRequestHandler(BaseHTTPRequestHandler):
                         </form>
                     </body>
                 </html>
-            """).format(message, role=self.post_dict['roles'], url="http://%s:%s" % self.server.server_address)
+            """).format(message, role=self.post_dict['roles'], url=url)
         else: # lti can't be graded
             response_str = textwrap.dedent("""
                 <html>
