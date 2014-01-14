@@ -57,5 +57,11 @@ urlpatterns = patterns(
         r'^midcourse_reverification_confirmation$',
         views.midcourse_reverification_confirmation,
         name="verify_student_midcourse_reverification_confirmation"
-    )
+    ),
+
+    url(
+        r'^midcourse_reverify_dash$',
+        views.midcourse_reverify_dash,
+        name="verify_student_midcourse_reverify_dash"
+    ),
 )

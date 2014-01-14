@@ -373,6 +373,12 @@ class MidCourseReverifyView(View):
             }
             return render_to_response("verify_student/midcourse_photo_reverification.html", context)
 
+def midcourse_reverify_dash(_request):
+    context = {
+        "user_full_name": _request.user.profile.name,
+        "courses": "yolo",
+    }
+    return render_to_response("verify_student/midcourse_reverify_dash.html", context)
 
 @login_required
 def reverification_submission_confirmation(_request):
