@@ -229,6 +229,7 @@ def click_grade(_step):
 
 @step('I see in iframe that LTI role is (.*)$')
 def check_role(_step, role):
+    world.is_css_present('iframe', wait_time=0)
     location = world.scenario_dict['LTI'].location.html_id()
     iframe_name = 'ltiFrame-' + location
     with world.browser.get_iframe(iframe_name) as iframe:
