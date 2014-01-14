@@ -8,7 +8,7 @@ from cmath import isinf
 #
 # Utility functions used in CAPA responsetypes
 
-default_tolerance = '1e-3%'
+default_tolerance = '0.001%'
 
 def compare_with_tolerance(v1, v2, tol=default_tolerance):
     '''
