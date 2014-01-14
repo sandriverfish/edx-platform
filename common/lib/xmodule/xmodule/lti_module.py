@@ -56,7 +56,6 @@ from pkg_resources import resource_string
 from xblock.core import String, Scope, List, XBlock
 from xblock.fields import Boolean, Float
 
-
 log = logging.getLogger(__name__)
 
 
@@ -347,21 +346,23 @@ class LTIModule(LTIFields, XModule):
             client_key=unicode(client_key),
             client_secret=unicode(client_secret)
         )
-
-        from courseware.access import has_access
-        course = self.get_course()
-        try:
-            user = self.system.get_real_user(self.get_user_id())
-        except TypeError:
-            user = u''
-        if self.system.user_is_masqueraded_as_student:
-            roles = u'Student'
-        elif has_access(user, course, 'instructor'):
-            roles = u'Instructor'
-        elif has_access(user, course, 'staff'):
-            roles = u'Administrator'
+        # get_real_user exists in LMS only.
+        # Determine specific role parameter is needed for LMS.
+        if self.system.get_real_user is not None:
+            from courseware.access import has_access
+            course = self.get_course()
+            user_id = self.get_user_id()
+            user = self.system.get_real_user(user_id)
+            if self.system.user_is_masqueraded_as_student:
+                role = u'Student'
+            elif has_access(user, course, 'instructor'):
+                role = u'Instructor'
+            elif has_access(user, course, 'staff'):
+                role = u'Administrator'
+            else:
+                role = u'Student'
         else:
-            roles = u'Student'
+            role = u'Student'
 
         # Must have parameters for correct signing from LTI:
         body = {
@@ -370,7 +371,7 @@ class LTIModule(LTIFields, XModule):
             u'launch_presentation_return_url': '',
             u'lti_message_type': u'basic-lti-launch-request',
             u'lti_version': 'LTI-1p0',
-            u'roles': roles,
+            u'roles': role,
 
             # Parameters required for grading:
             u'resource_link_id': self.get_resource_link_id(),
